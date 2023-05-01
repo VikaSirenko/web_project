@@ -1,5 +1,5 @@
-from comment import *
-from bdConnection import *
+from entities.comment import *
+from bd.bdConnection import *
 
 coll=db.comments
 

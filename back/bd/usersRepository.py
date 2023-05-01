@@ -1,5 +1,5 @@
-from user import *
-from bdConnection import *
+from entities.user import *
+from bd.bdConnection import *
 
 
 coll=db.users

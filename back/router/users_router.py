@@ -1,10 +1,10 @@
 from flask import Flask, request, jsonify, make_response
-from usersRepository import *
-from filmRepository import *
-from commentsRepository import * 
-from user import *
-from comment import *
-from film import *
+from bd.usersRepository import *
+from bd.filmRepository import *
+from bd.commentsRepository import * 
+from entities.user import *
+from entities.comment import *
+from entities.film import *
 from flask import copy_current_request_context
 import jwt
 import datetime
