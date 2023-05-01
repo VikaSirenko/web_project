@@ -1,5 +1,6 @@
 from film import *
 from bdConnection import *
+from bson.objectid import ObjectId
 
 coll=db.films
 
@@ -21,6 +22,7 @@ class FilmRepository:
             web_film= Film(_id,name, year, genre, directors, actors, duration, description)
             list_films.append(web_film)
         
+        
         return list_films
 
 
@@ -34,7 +36,7 @@ class FilmRepository:
         
 
     def filmExistsById(self, filmId):
-        query = {"_id": filmId}
+        query = {"_id": ObjectId(filmId)}
         film=coll.find_one(query)
         if(film!=None):
             return True
@@ -44,7 +46,7 @@ class FilmRepository:
 
     def createFilm(self, film):
         if(self.filmExist(film.name)==False):
-            new_film={ "name":film.name, "year":film.name, "genre":film.genre, "directors":film.directors, "actors":film.actors, "duration":film.duration, "description":film.description }
+            new_film={ "name":film.name, "year":film.year, "genre":film.genre, "directors":film.directors, "actors":film.actors, "duration":film.duration, "description":film.description }
             result=coll.insert_one(new_film)
             return result.inserted_id
         else: 

@@ -1,5 +1,6 @@
 from user import *
 from bdConnection import *
+from bson.objectid import ObjectId
 
 
 coll=db.users
@@ -30,8 +31,13 @@ class UserRepository:
         else:
             return False
         
+    def getUserByEmail(self, email):
+        query = {"email": email}
+        user=coll.find_one(query)
+        return user
+        
     def userExistsById(self, userId):
-        query = {"_id": userId}
+        query = {'_id': ObjectId(userId)}
         user=coll.find_one(query)
         if(user!=None):
             return True
@@ -39,9 +45,8 @@ class UserRepository:
             return False
 
     def userExistForSignIn(self,userEmail, password):
-        user = User()
-        hash_password=user._passwordHashing(password)
-        query = {"email": userEmail, "password": hash_password}
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        query = {"email": userEmail, "password": hashed_password}
         user=coll.find_one(query)
         if(user!=None):
             return True

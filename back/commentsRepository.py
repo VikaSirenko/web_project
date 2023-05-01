@@ -27,8 +27,8 @@ class CommentsRepository:
         return list_comments
 
 
-    def createComment(self, comment,film, user):
-        if(user.userExistsById(comment.userId)==True and  film.userExistsById(comment.filmId)==True):
+    def createComment(self, comment,filmConnection, userConnection):
+        if(userConnection.userExistsById(comment.userId)==True and  filmConnection.filmExistsById(comment.filmId)==True):
             new_comment={ "userId": comment.userId, "filmId":comment.filmId, "text": comment.text}
             result=coll.insert_one(new_comment)
             return result.inserted_id
