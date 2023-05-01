@@ -1,5 +1,5 @@
-from entities.film import *
-from bd.bdConnection import *
+from film import *
+from bdConnection import *
 
 coll=db.films
 

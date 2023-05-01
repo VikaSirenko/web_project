@@ -1,5 +1,5 @@
-from entities.user import *
-from bd.bdConnection import *
+from user import *
+from bdConnection import *
 
 
 coll=db.users
@@ -38,6 +38,15 @@ class UserRepository:
         else:
             return False
 
+    def userExistForSignIn(self,userEmail, password):
+        user = User()
+        hash_password=user._passwordHashing(password)
+        query = {"email": userEmail, "password": hash_password}
+        user=coll.find_one(query)
+        if(user!=None):
+            return True
+        else:
+            return False
 
     def createUser(self, user):
         if(self.userExist(user.email)==False):

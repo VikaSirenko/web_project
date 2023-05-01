@@ -1,5 +1,9 @@
-from entities.comment import *
-from bd.bdConnection import *
+from comment import *
+from bdConnection import *
+import sys
+sys.path.append('/.../web_project/entities')
+import comment
+
 
 coll=db.comments
 
