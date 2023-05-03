@@ -44,6 +44,16 @@ class UserRepository:
         else:
             return False
 
+
+    def getUserById(self, userId):
+        query = {'_id': ObjectId(userId)}
+        user=coll.find_one(query)
+        if(user!=None):
+            return user
+        else:
+            return None
+        
+
     def userExistForSignIn(self,userEmail, password):
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
         query = {"email": userEmail, "password": hashed_password}

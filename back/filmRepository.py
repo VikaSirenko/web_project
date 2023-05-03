@@ -53,12 +53,12 @@ class FilmRepository:
             return None 
 
 
-    def deleteFilm(self, filmName):
-        result = coll.delete_one({'name': filmName})
+    def deleteFilm(self, filmId):
+        result = coll.delete_one({'_id': ObjectId(filmId)})
         if(result.deleted_count==1):
-            return "deleted"
+            return True
         else:
-            return "not deleted"
+            return False
     
 
     def editFilm(self, film):

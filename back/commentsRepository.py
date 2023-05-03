@@ -1,8 +1,6 @@
 from comment import *
 from bdConnection import *
-import sys
-sys.path.append('/.../web_project/entities')
-import comment
+from bson.objectid import ObjectId
 
 
 coll=db.comments
@@ -10,9 +8,9 @@ coll=db.comments
 class CommentsRepository:
 
     def getListOfFilmComments(self, filmId):
-        field_name = 'fimlId'
-        query = {field_name: {'$exists': True}}
-        film_comments = coll.find(query)
+        ##field_name = 'fimlId'
+        #query = {field_name: filmId}
+        film_comments = coll.find({'filmId': filmId})
         
         list_comments=[]
         for comment in film_comments:
@@ -37,10 +35,13 @@ class CommentsRepository:
 
 
     def deleteComment(self, commentId):
-        result = coll.delete_one({'_id': commentId})
+        result = coll.delete_one({'_id': ObjectId(commentId)})
         if(result.deleted_count==1):
-            return "deleted"
+            return True
         else:
-            return "not deleted"
+            return False
     
-
+    
+    def deleteAllFilmComments(self, filmId):
+        result = coll.delete_many({'filmId': filmId})
+        return result.deleted_count

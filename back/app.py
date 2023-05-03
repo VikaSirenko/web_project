@@ -120,6 +120,58 @@ def getListOfFilms():
 
 
 
+@app.route('/getComments', methods=['GET'])
+def getListOfComments():
+    try:
+        content = request.form 
+        all_comments= connectionComment.getListOfFilmComments(content["filmId"])
+        if(len(all_comments)!=0):
+            string_list = ""
+            for comment in all_comments:
+                user=connectionUser.getUserById(comment.userId)
+                userName=user['firstName']+" "+user["lastName"]
+                string_list += userName+": "+comment.text+"\n"
+            return string_list, 200
+        else:
+            return ("There are no comments for this movie"), 404
+    except:
+        return "It is impossible to get the list of comments", 400
+    
+
+
+
+@app.route('/deleteFilm', methods=['DELETE'])
+@token_required
+def deleteFilm():
+    try:
+        content = request.form 
+        result=connectionFilm.deleteFilm(content['_id'])
+        if (result):
+                connectionComment.deleteAllFilmComments(content["_id"])
+                return "Deleted", 200
+        else:
+                return ("Cannot find film to delete"), 404
+    except:
+        return "Can not delete", 400
+    
+
+
+
+@app.route('/deleteComment', methods=['DELETE'])
+@token_required
+def deleteComment():
+    try:
+        content = request.form 
+        result=connectionComment.deleteComment(content['_id'])
+        if (result):
+                return "Deleted", 200
+        else:
+                return ("Cannot find comment to delete"), 404
+    except:
+        return "Can not delete", 400
+
+
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
 
