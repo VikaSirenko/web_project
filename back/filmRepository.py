@@ -61,8 +61,8 @@ class FilmRepository:
             return False
     
 
-    def editFilm(self, film):
-        query = {'name': film.name}
+    def editFilm(self, oldName,  film):
+        query = {'name': oldName}
         new_values = {'$set': {"name": film.name, "year": film.year, "genre":film.genre, "directors":film.directors, "actors":film.actors, "duration":film.duration, "description":film.description}}
         result = coll.update_one(query, new_values)
         if(result.modified_count==1):

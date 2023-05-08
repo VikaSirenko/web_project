@@ -78,7 +78,6 @@ def admin_token_required(f):
             return "Token is missing", 403
         try:
             data=jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
-            print(data)
             if (data['email']=='vika_sirenko@gmail.com' and hashlib.sha256(data['password'].encode()).hexdigest()=='03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'):
                 result = f(*args, **kwargs)
                 return result[0], 200
@@ -94,8 +93,11 @@ def admin_token_required(f):
 @token_required
 def createComment():
     try:
+        user_data=request.headers.get('authorization')
+        data=jwt.decode(user_data, app.config['SECRET_KEY'], algorithms=['HS256'])
+        user=connectionUser.getUserByEmail(data['email'])
         content = request.form  
-        comment= Comment(0, content['userId'], content['filmId'], content['text'])
+        comment= Comment(0, user['_id'], content['filmId'], content['text'])
         newId= connectionComment.createComment(comment, connectionFilm, connectionUser)
         if(newId==None):
             return  "Unable to create comment ", 404
@@ -188,6 +190,24 @@ def deleteComment():
                 return ("Cannot find comment to delete"), 404
     except:
         return "Can not delete", 400
+
+
+
+@app.route('/editFilm', methods=['PUT'])
+@admin_token_required
+def editFilm():
+    try:
+        content = request.form 
+        old_name=content['oldName']
+        film= Film(0, content['name'], content['year'], content['genre'], content['directors'], content['actors'], content['duration'], content['description'])
+        result= connectionFilm.editFilm(old_name, film)
+        if(result=='updated'):
+            return  "Film data has been updated", 200
+        else:
+            return "Film data has not been updated", 404
+    except:
+        return "Unable to update movie data", 404
+
 
 
 
