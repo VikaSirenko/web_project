@@ -69,6 +69,26 @@ def token_required(f):
     return decorated
 
 
+def admin_token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token =request.headers.get('authorization')
+
+        if not token:
+            return "Token is missing", 403
+        try:
+            data=jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+            print(data)
+            if (data['email']=='vika_sirenko@gmail.com' and hashlib.sha256(data['password'].encode()).hexdigest()=='03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'):
+                result = f(*args, **kwargs)
+                return result[0], 200
+            else:
+                return "You do not have administrator rights to perform this action", 403
+        except:
+            return "Token is invalid", 403
+        
+    return decorated
+
 
 @app.route('/createComment', methods=['POST'])
 @token_required
@@ -87,9 +107,8 @@ def createComment():
 
 
 
-
 @app.route('/createFilm', methods=['POST'])
-@token_required
+@admin_token_required
 def createFilm():
     try:
         content = request.form 
@@ -141,7 +160,7 @@ def getListOfComments():
 
 
 @app.route('/deleteFilm', methods=['DELETE'])
-@token_required
+@admin_token_required
 def deleteFilm():
     try:
         content = request.form 
@@ -158,7 +177,7 @@ def deleteFilm():
 
 
 @app.route('/deleteComment', methods=['DELETE'])
-@token_required
+@admin_token_required
 def deleteComment():
     try:
         content = request.form 
